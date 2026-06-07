@@ -13,6 +13,7 @@ return new class extends Migration
     {
         DB::statement('CREATE SCHEMA IF NOT EXISTS core');
         DB::statement('CREATE SCHEMA IF NOT EXISTS auth');
+        DB::statement('CREATE SCHEMA IF NOT EXISTS blog');
     }
 
     /**
@@ -22,5 +23,6 @@ return new class extends Migration
     {
         DB::statement('DROP SCHEMA IF EXISTS core CASCADE');
         DB::statement('DROP SCHEMA IF EXISTS auth CASCADE');        
+        DB::statement('DROP SCHEMA IF EXISTS blog CASCADE');
     }
 };
