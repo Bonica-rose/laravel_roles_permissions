@@ -4,13 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PermissionController extends Controller
+class PermissionController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:view permissions', only: ['index']),
+            new Middleware('permission:create permissions', only: ['create']),
+            new Middleware('permission:edit permissions', only: ['edit']),
+            new Middleware('permission:delete permissions', only: ['destroy']),
+        ];
+    }
+
     // Show permission page
     public function index()
     {        
-        $permissions = Permission::orderBy('created_at', 'desc')->paginate(5);
+        $permissions = Permission::orderBy('created_at', 'desc')->paginate(9);
         
         return view('permissions.list', compact('permissions'));
     }

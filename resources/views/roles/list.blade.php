@@ -4,7 +4,9 @@
             <h2 class="font-semibold text-lg text-gray-800 leading-tight">
                 {{ __('Roles') }}
             </h2>
-            <a href="{{ route('roles.create') }}" class="inline-flex items-center px-3 py-2 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:border-blue-800 focus:ring focus:ring-blue-200 disabled:opacity-25 transition">Create Role</a>
+            @can('create roles') 
+                <a href="{{ route('roles.create') }}" class="inline-flex items-center px-3 py-2 bg-blue-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:border-blue-800 focus:ring focus:ring-blue-200 disabled:opacity-25 transition">Create Role</a>
+            @endcan    
         </div> 
     </x-slot>
 
@@ -36,26 +38,33 @@
                                     </td>
 
                                     <td class="px-6 py-2 whitespace-nowrap">{{ $role->name }}</td>
-                                    <td class="px-6 py-2 whitespace-nowrap">
-                                        {{ $role->permissions->pluck('name')->join(', ') }}
+                                    <td class="px-6 py-2 whitespace-wrap">
+                                        {{ $role->permissions()->pluck('name')->join(', ') }}
                                     </td>
 
-                                    <td class="px-6 py-2 whitespace-nowrap" width="400">
+                                    <td class="px-6 py-2 whitespace-nowrap" width="200">
                                         {{ \Carbon\Carbon::parse($role->created_at)->format('d M, Y') }}
                                     </td>
                                     <td class="px-6 py-2 whitespace-nowrap text-center" width="100">
+                                        @can('edit roles') 
+                                            <a href="{{ route('roles.edit', $role->id) }}" class="bg-amber-500 rounded-md text-sm font-semibold text-white p-2 hover:bg-amber-400">Edit</a>
+                                        @else
+                                            <span> - </span>
+                                        @endcan
 
-                                        <a href="{{ route('roles.edit', $role->id) }}" class="bg-amber-500 rounded-md text-sm font-semibold text-white p-2 hover:bg-amber-400">Edit</a>
-
-                                        <form 
-                                            action="{{ route('roles.destroy', $role) }}" 
-                                            method="POST" class="inline-block"
-                                            onsubmit="return confirm('Are you sure you want to delete the role &quot;{{ $role->name }}&quot;? This action cannot be undone.');"
-                                        >
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="bg-red-600 font-semibold text-white text-sm rounded-md px-3 py-1.5 hover:bg-red-500">Delete</button>
-                                        </form>
+                                        @can('delete roles') 
+                                            <form 
+                                                action="{{ route('roles.destroy', $role) }}" 
+                                                method="POST" class="inline-block"
+                                                onsubmit="return confirm('Are you sure you want to delete the role &quot;{{ $role->name }}&quot;? This action cannot be undone.');"
+                                            >
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="bg-red-600 font-semibold text-white text-sm rounded-md px-3 py-1.5 hover:bg-red-500">Delete</button>
+                                            </form>
+                                        @else
+                                            <span> - </span>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach 
